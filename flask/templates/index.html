@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>記帳本</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .summary div {
+            background-color: #f1eeec;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+        a.button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 1.5rem auto;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        a.button:hover {
+            background-color: #2980b9;
+        }
+        .records {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .record-column {
+            width: 48%;
+            text-align: center;
+        }
+        .record-column h2 {
+            color: #2980b9;
+        }
+        ul.records {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        ul.records li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .record-info {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .record-type, .record-amount {
+            width: 45%;
+            text-align: center;
+        }
+        .record-date {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>記帳紀錄</h1>
+    <div class="summary">
+        <div>總收入<br><strong>{{ income }}</strong></div>
+        <div>總支出<br><strong>{{ expense }}</strong></div>
+        <div>餘額<br><strong>{{ balance }}</strong></div>
+    </div>
+
+    <a class="button" href="/add">➕ 新增紀錄</a>
+
+    <div class="records">
+        <div class="record-column">
+            <h2>收入</h2>
+            <ul class="records">
+                {% for r in records if r.type == 'income' %}
+                <li>
+                    <div class="record-row">
+                        <span class="record-type">{{ '$+' if r.type == 'income' else '$-' }}</span>
+                        <span class="record-amount">{{ r.amount }}元</span>
+                        {% if r.description %}<span class="record-description">（{{ r.description }}）</span>{% endif %}
+                        <span class="record-date">{{ r.date }}</span>
+                        <form method="POST" action="{{ url_for('delete', index=loop.index0) }}" style="display:inline;">
+                            <button type="submit" class="delete-button">刪除</button>
+                        </form>
+                    </div>
+                </li>
+                
+                
+                {% else %}
+                <li>目前沒有收入紀錄！</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="record-column">
+            <h2>支出</h2>
+            <ul class="records">
+                {% for r in records if r.type == 'expense' %}
+                <li>
+                    <div class="record-row">
+                        <span class="record-type">{{ '$+' if r.type == 'income' else '$-' }}</span>
+                        <span class="record-amount">{{ r.amount }}元</span>
+                        {% if r.description %}<span class="record-description">（{{ r.description }}）</span>{% endif %}
+                        <span class="record-date">{{ r.date }}</span>
+                        <form method="POST" action="{{ url_for('delete', index=loop.index0) }}" style="display:inline;">
+                            <button type="submit" class="delete-button">刪除</button>
+                        </form>
+                    </div>
+                </li>
+                
+                
+                {% else %}
+                <li>目前沒有支出紀錄！</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
